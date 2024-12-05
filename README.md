@@ -1,3 +1,5 @@
+![596CAF84-D13C-4882-8743-C0055049C5C4-preview](https://github.com/user-attachments/assets/67bfbbfd-426b-4793-a058-e6ee011ec831)
+
 # Purple Air Data Collection & Transfer System
 
 A robust Node.js application that automates the collection of air quality data from Purple Air sensors and seamlessly transfers it to Eagle.io for visualization and analysis. This project demonstrates practical implementation of API integration, automated data collection, FTP file transfer, and enterprise-level logging.
