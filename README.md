@@ -97,9 +97,6 @@ The application includes:
 - Timestamp-based log entries
 - JSON-formatted logs for easy parsing
 
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
 
 ## 📝 License
 
