@@ -21,11 +21,11 @@ COMPLETE SETUP INSTRUCTIONS:
    b) Environment File (.env):
       - Open Notepad
       - Copy these exact lines:
-        PURPLE_AIR_API_KEY=DD25F38A-78EE-11EF-95CB-42010A80000E
-        PURPLE_AIR_SENSOR_ID=C4:D8:D5:2:8A:61
-        EAGLE_IO_API_KEY=CiwSlVkt4x5aSmP4HuLIWaINIArE0QNxwVV5ZAhb
+        PURPLE_AIR_API_KEY=
+        PURPLE_AIR_SENSOR_ID=
+        EAGLE_IO_API_KEY=
         FTP_HOST=ftp.eagle.io
-        FTP_USER=dherlocker@ramboll.com
+        FTP_USER=
       - Click "Save As"
       - Navigate to C:\purple-air-monitor\
       - Set "Save as type" to "All Files (*.*)"
