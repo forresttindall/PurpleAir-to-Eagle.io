@@ -1,9 +1,115 @@
-const fetch = require('node-fetch');
-const ftp = require('basic-ftp');
-const fs = require('fs');
-const path = require('path');
-const winston = require('winston');
-const schedule = require('node-schedule');
+// Forrest Tindall Creationbase.io 2024
+
+/*
+COMPLETE SETUP INSTRUCTIONS:
+
+1. FOLDER SETUP:
+   - Open Windows Explorer
+   - Go to C: drive
+   - Create new folder: C:\purple-air-monitor\
+
+2. FILE CREATION:
+   a) Main Script (data-transfer.js):
+      - Open Notepad
+      - Copy this entire script
+      - Click "Save As"
+      - Navigate to C:\purple-air-monitor\
+      - Set "Save as type" to "All Files (*.*)"
+      - Name it: data-transfer.js
+      - Click Save
+
+
+
+1. Install Node.js from https://nodejs.org (LTS version)
+2. Create a new directory for this project
+3. Open Command Prompt in that directory
+4. Run these commands:
+   npm init -y
+   npm install node-fetch@2.6.9 basic-ftp dotenv winston node-schedule
+
+6. Save this script as 'data-transfer.js'
+
+WINDOWS TASK SCHEDULER SETUP FOR 30-MINUTE INTERVALS:
+Method 1 - Running continuously:
+1. Run using: node data-transfer.js
+   The script will run continuously and handle the 30-minute scheduling internally
+
+Method 2 - Task Scheduler (preferred for production):
+1. Open Task Scheduler (taskschd.msc)
+2. Click "Create Basic Task"
+3. Name: "Purple Air Data Collection"
+4. Trigger: Daily
+5. Advanced settings:
+   - Check "Repeat task every: 30 minutes"
+   - For a duration of: Indefinitely
+6. Action: Start a program
+7. Program/script: "C:\Program Files\nodejs\node.exe" (adjust path if needed)
+8. Arguments: "full-path-to-your-script\data-transfer.js"
+9. Start in: "full-path-to-your-script-directory"
+
+
+
+
+/*
+EAGLE.IO SETUP INSTRUCTIONS:
+
+1. LOG INTO EAGLE.IO:
+   - Go to https://eagle.io
+   - Login with your credentials
+   - Create a new workspace if needed
+
+2. CREATE A DATA SOURCE:
+   - Click "Add Source" in your workspace
+   - Select "File Transport" as the source type
+   - Configure FTP settings:
+     * Transport: FTP
+     * Host: ftp.eagle.io
+     * Username: Your FTP username (same as FTP_USER in .env)
+     * Security: FTPS (Explicit)
+     * Remote Path: / (root directory)
+     * File Pattern: purple-air-data-*.csv
+
+3. CONFIGURE DATA PARSER:
+   - Parser Type: Text (Delimited)
+   - Format: CSV
+   - Header Row: 1
+   - Configure columns:
+     * timestamp (TYPE: TIMESTAMP, Format: ISO8601)
+     * pm2_5 (TYPE: NUMBER)
+     * temperature (TYPE: NUMBER)
+     * humidity (TYPE: NUMBER)
+
+4. CREATE VISUALIZATION:
+   - In your workspace, click "Add Display"
+   - Choose visualization type (e.g., Chart, Table, or Dashboard)
+   - Select the data source you created
+   - Map the columns to your visualization:
+     * X-axis: timestamp
+     * Y-axis: pm2_5, temperature, or humidity
+
+5. VERIFY DATA FLOW:
+   - Wait for next data collection (30 minutes)
+   - Check if new data appears in eagle.io
+   - Verify timestamps are correct
+   - Confirm values are displaying properly
+
+Note: The FTP credentials in the .env file must match your eagle.io account settings
+*/
+
+
+
+
+
+
+import fetch from 'node-fetch';
+import * as ftp from 'basic-ftp';
+import fs from 'fs';
+import path from 'path';
+import winston from 'winston';
+import { fileURLToPath } from 'url';
+
+// Get __dirname equivalent in ES modules
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Configure logging
 const logger = winston.createLogger({
@@ -20,15 +126,15 @@ const logger = winston.createLogger({
 // Hardcoded Configuration
 const config = {
     purpleAir: {
-        apiKey: '',
-        sensorId: '', // You must replace this with your actual sensor ID
+        apiKey: 'DD25F38A-78EE-11EF-95CB-42010A80000E',
+        sensorId: '237037', // You must replace this with your actual sensor ID
         readKey: '', // Optional: add read key if required by your sensor
         apiUrl: 'https://api.purpleair.com/v1/sensors'
     },
     eagleIo: {
-        apiKey: '',
+        apiKey: 'CiwSlVkt4x5aSmP4HuLIWaINIArE0QNxwVV5ZAhb',
         ftpHost: 'ftp.eagle.io',
-        ftpUser: '',
+        ftpUser: 'women-shop-suit',
         ftpPassword: '' // You must add your actual FTP password
     },
     localFile: path.join(__dirname, 'purple-air-data.csv')
@@ -149,29 +255,22 @@ async function dataCollectionTask() {
     }
 }
 
-if (require.main === module) {
+// Replace the CommonJS main module check with ES Module version
+if (import.meta.url === `file://${process.argv[1]}`) {
     logger.info('Starting Purple Air data collection service');
     
-    dataCollectionTask().catch(error => {
-        logger.error('Initial task failed:', error);
-        process.exit(1);
-    });
-    
-    const job = schedule.scheduleJob('*/30 * * * *', () => {
-        dataCollectionTask().catch(error => {
-            logger.error('Scheduled task failed:', error);
+    dataCollectionTask()
+        .then(() => {
+            logger.info('Task completed, exiting');
+            process.exit(0);
+        })
+        .catch(error => {
+            logger.error('Task failed:', error);
+            process.exit(1);
         });
-    });
-
-    process.on('SIGTERM', () => {
-        job.cancel();
-        process.exit(0);
-    });
-    
-    logger.info('Service scheduled to run every 30 minutes');
 }
 
-module.exports = dataCollectionTask;
+export default dataCollectionTask;
 
 process.on('uncaughtException', (error) => {
     logger.error('Uncaught exception:', error);
