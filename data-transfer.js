@@ -101,15 +101,11 @@ Note: The FTP credentials in the .env file must match your eagle.io account sett
 
 
 
-import fetch from 'node-fetch';
-import * as ftp from 'basic-ftp';
-import fs from 'fs';
-import path from 'path';
-import winston from 'winston';
-import { fileURLToPath } from 'url';
-
-// Get __dirname equivalent in ES modules
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const fetch = require('node-fetch');
+const ftp = require('basic-ftp');
+const fs = require('fs');
+const path = require('path');
+const winston = require('winston');
 
 // Configure logging
 const logger = winston.createLogger({
@@ -255,8 +251,7 @@ async function dataCollectionTask() {
     }
 }
 
-// Replace the CommonJS main module check with ES Module version
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (require.main === module) {
     logger.info('Starting Purple Air data collection service');
     
     dataCollectionTask()
@@ -270,7 +265,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
         });
 }
 
-export default dataCollectionTask;
+module.exports = dataCollectionTask;
 
 process.on('uncaughtException', (error) => {
     logger.error('Uncaught exception:', error);
