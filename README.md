@@ -20,7 +20,7 @@ A robust Node.js application that automates the collection of air quality data f
 - **basic-ftp** - FTP file transfer implementation
 - **winston** - Enterprise-level logging
 - **node-schedule** - Task scheduling
-- **dotenv** - Environment variable management
+
 
 ## 📋 Prerequisites
 
