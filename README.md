@@ -104,7 +104,7 @@ This project is licensed under the copywrite
 
 ## 🔗 Contact
 
-Your Name - Forrest Tindall - [https://www.linkedin.com/in/forrest-tindall]
+Your Name - Forrest Tindall - [https://forresttindall.com/#/contact]
 
 Project Link: [[https://github.com/yourusername/purple-air-monitor]([https://github.com/yourusername/purple-air-monitor](https://github.com/forresttindall/PurpleAir-to-Eagle.io)]
 
